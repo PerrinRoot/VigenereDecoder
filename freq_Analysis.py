@@ -1,26 +1,27 @@
-from collections import Counter
-
 frequency_of_letters = 'ETAOINSHRDLCUMWFGYPBVKJXQZ'
-letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def getLetterCount(message):
-    return Counter(letter for letter in message.upper() if letter in letters)
+    letter_count = {letter: 0 for letter in alphabet}
+    for char in message.upper():
+        if char in alphabet:
+            letter_count[char] += 1
+    return letter_count
 
 def getFrequencyOrder(message):
-    letterToFreq = getLetterCount(message)
-    freqToLetter = {}
-    for letter, freq in letterToFreq.items():
-        freqToLetter.setdefault(freq, []).append(letter)
-    for freq in freqToLetter:
-        freqToLetter[freq].sort(key=frequency_of_letters.find, reverse=True)
-        freqToLetter[freq] = ''.join(freqToLetter[freq])
-    freqPairs = sorted(freqToLetter.items(), key=lambda x: x[0], reverse=True)
-    freqOrder = ''.join(letters for freq, letters in freqPairs)
-    return freqOrder
+    letter_to_freq = getLetterCount(message)
+    freq_to_letters = {}
+    for letter, freq in letter_to_freq.items():
+        freq_to_letters.setdefault(freq, []).append(letter)
+    for freq, letters in freq_to_letters.items():
+        letters.sort(key=frequency_of_letters.find, reverse=True)
+        freq_to_letters[freq] = ''.join(letters)
+    freq_pairs = sorted(freq_to_letters.items(), reverse=True)
+    freq_order = ''.join(letters for _, letters in freq_pairs)
+    return freq_order
 
 def englishFreqMatchScore(message):
-    freqOrder = getFrequencyOrder(message)
-    matchScore = sum(commonLetter in freqOrder[:6] for commonLetter in frequency_of_letters[:6]) + \
-                 sum(uncommonLetter in freqOrder[-6:] for uncommonLetter in frequency_of_letters[-6:])
-
-    return matchScore
+    freq_order = getFrequencyOrder(message)
+    match_score = sum(1 for letter in frequency_of_letters[:6] if letter in freq_order[:6]) \
+                + sum(1 for letter in frequency_of_letters[-6:] if letter in freq_order[-6:])
+    return match_score
