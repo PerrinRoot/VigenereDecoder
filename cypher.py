@@ -82,10 +82,6 @@ def getUsefulFactors(num):
             factors.add(num // i)
     return list(factors & set(range(2, maxlength + 1)))
 
-
-def getItemAtIndexOne(x):
-    return x[1]
-
 def getMostCommonFactors(seqFactors):
     allFactors = [factor for factors in seqFactors.values() for factor in factors]
     factorCounts = Counter(allFactors)
